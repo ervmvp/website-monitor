@@ -11,21 +11,6 @@ error_reporting(E_ALL);
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-// Convert PHP warnings into exceptions.
-set_error_handler(function ($severity, $message, $file, $line) {
-    if (!(error_reporting() & $severity)) {
-        return false;
-    }
-
-    throw new ErrorException(
-        $message,
-        0,
-        $severity,
-        $file,
-        $line
-    );
-});
-
 try {
 
     require_once __DIR__ . '/includes/functions.php';
@@ -102,8 +87,6 @@ try {
         'message' => $message
     ];
 
-} finally {
-    restore_error_handler();
 }
 
 // Output valid JSON.
