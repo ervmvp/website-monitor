@@ -3,24 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
-
     <meta
         name="description"
         content="Check website availability, HTTP status codes, and response times."
     >
-
-    <title>PulseCheck — Website Monitor</title>
-
+    <title>PulseCheck - Website Monitor</title>
     <link
         rel="stylesheet"
         href="assets/css/style.css"
     >
-
     <script
         src="assets/js/script.js"
         defer
