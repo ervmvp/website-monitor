@@ -8,6 +8,7 @@ ini_set('log_errors', '1');
 error_reporting(E_ALL);
 
 // Start output buffering.
+$initialBufferLevel = ob_get_level();
 ob_start();
 
 // Always return JSON.
@@ -106,9 +107,17 @@ try {
     restore_error_handler();
 }
 
-// Remove any accidental HTML or PHP output.
-while (ob_get_level() > 0) {
-    ob_end_clean();
+// Remove accidental output without discarding buffers owned by the host.
+while (ob_get_level() > $initialBufferLevel) {
+    $bufferStatus = ob_get_status();
+
+    if (
+        !isset($bufferStatus['flags'])
+        || ($bufferStatus['flags'] & PHP_OUTPUT_HANDLER_REMOVABLE) === 0
+        || !ob_end_clean()
+    ) {
+        break;
+    }
 }
 
 // Output valid JSON.
