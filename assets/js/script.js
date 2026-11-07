@@ -182,7 +182,7 @@ form.addEventListener("submit", async (event) => {
     setLoading(true);
 
     try {
-        const response = await fetch("check.php", {
+        const response = await fetch("/check.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
