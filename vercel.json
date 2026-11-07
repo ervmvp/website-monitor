@@ -7,6 +7,10 @@
   },
   "routes": [
     {
+      "src": "/check.php",
+      "dest": "/api/check.php"
+    },
+    {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
     },

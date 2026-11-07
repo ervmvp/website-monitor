@@ -7,10 +7,6 @@ ini_set('log_errors', '1');
 
 error_reporting(E_ALL);
 
-// Start output buffering.
-$initialBufferLevel = ob_get_level();
-ob_start();
-
 // Always return JSON.
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -35,8 +31,6 @@ try {
     require_once __DIR__ . '/includes/functions.php';
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        http_response_code(405);
-
         throw new RuntimeException(
             'Only POST requests are allowed.'
         );
@@ -86,9 +80,14 @@ try {
         $exception->getLine()
     );
 
-    // Return a generic message to the browser.
+    // Keep expected request errors distinct from server failures.
     if ($exception instanceof InvalidArgumentException) {
         http_response_code(400);
+
+        $message = $exception->getMessage();
+
+    } elseif ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        http_response_code(405);
 
         $message = $exception->getMessage();
 
@@ -107,23 +106,8 @@ try {
     restore_error_handler();
 }
 
-// Remove accidental output without discarding buffers owned by the host.
-while (ob_get_level() > $initialBufferLevel) {
-    $bufferStatus = ob_get_status();
-
-    if (
-        !isset($bufferStatus['flags'])
-        || ($bufferStatus['flags'] & PHP_OUTPUT_HANDLER_REMOVABLE) === 0
-        || !ob_end_clean()
-    ) {
-        break;
-    }
-}
-
 // Output valid JSON.
 echo json_encode(
     $response,
     JSON_INVALID_UTF8_SUBSTITUTE
 );
-
-exit;
